@@ -6,16 +6,16 @@ function preload() {
     game.load.image('bullet', 'assets/bullets2.png');
     game.load.image('ship', 'assets/ship.png');
     //game.load.image('asteroid', 'assets/asteroid1.png');
-    game.load.image('asteroid_green', 'assets/ast_green.png');
-    game.load.image('asteroid_blue', 'assets/ast_blue.png');
-    game.load.image('asteroid_purple', 'assets/ast_purple.png');
+    game.load.image('asteroid_g', 'assets/ast_green_80.png');
+    game.load.image('asteroid_m', 'assets/ast_blue_50x50.png');
+    game.load.image('asteroid_p', 'assets/ast_purple_35x35.png');
 
 }
 
 var sprite;
-var asteroids_green;
-var asteroids_purple;
-var asteroids_blue;
+var asteroids_g;
+var asteroids_p;
+var asteroids_m;
 var cursors;
 
 var bullet;
@@ -56,18 +56,18 @@ function create() {
     sprite = game.add.sprite(300, 300, 'ship');
     sprite.anchor.set(0.5);
     
-    asteroids_green = game.add.group();
-    asteroids_green.enableBody = true;
+    asteroids_g = game.add.group();
+    asteroids_g.enableBody = true;
 
-    asteroids_blue = game.add.group();
-    asteroids_blue.enableBody = true;
+    asteroids_m = game.add.group();
+    asteroids_m.enableBody = true;
 
-    asteroids_purple = game.add.group();
-    asteroids_purple.enableBody = true;
+    asteroids_p = game.add.group();
+    asteroids_p.enableBody = true;
 
     for (var i = 0; i < 1; i++)
     {
-        var s = asteroids_green.create(game.world.randomX, game.world.randomY, 'asteroid_green');
+        var s = asteroids_g.create(game.world.randomX, game.world.randomY, 'asteroid_g');
         //s.body.collideWorldBounds = true;
         s.body.bounce.set(1);
         s.body.velocity.setTo(10 + Math.random() * 40, 10 + Math.random() * 40);
@@ -75,7 +75,7 @@ function create() {
 
     for (var i = 0; i < 1; i++)
     {
-        var s = asteroids_blue.create(game.world.randomX, game.world.randomY, 'asteroid_blue');
+        var s = asteroids_m.create(game.world.randomX, game.world.randomY, 'asteroid_m');
         //s.body.collideWorldBounds = true;
         s.body.bounce.set(1);
         s.body.velocity.setTo(10 + Math.random() * 40, 10 + Math.random() * 40);
@@ -83,7 +83,7 @@ function create() {
 
     for (var i = 0; i < 1; i++)
     {
-        var s = asteroids_purple.create(game.world.randomX, game.world.randomY, 'asteroid_purple');
+        var s = asteroids_p.create(game.world.randomX, game.world.randomY, 'asteroid_p');
         //s.body.collideWorldBounds = true;
         s.body.bounce.set(1);
         s.body.velocity.setTo(10 + Math.random() * 40, 10 + Math.random() * 40);
@@ -114,13 +114,13 @@ function update() {
     //game.physics.arcade.collide(sprite, asteroids_purple);
     //game.physics.arcade.collide(sprite, asteroids_blue);
 
-    game.physics.arcade.overlap(asteroids_green, bullets, fireGreenAsteroid, null, this);
-    game.physics.arcade.overlap(asteroids_purple, bullets, firePurpleAsteroid, null, this);
-    game.physics.arcade.overlap(asteroids_blue, bullets, fireBlueAsteroid, null, this);
+    game.physics.arcade.overlap(asteroids_g, bullets, fireGreenAsteroid, null, this);
+    game.physics.arcade.overlap(asteroids_p, bullets, firePurpleAsteroid, null, this);
+    game.physics.arcade.overlap(asteroids_m, bullets, fireBlueAsteroid, null, this);
 
-    game.physics.arcade.overlap(asteroids_green, sprite, loseLife, null, this);
-    game.physics.arcade.overlap(asteroids_purple, sprite, loseLife, null, this);
-    game.physics.arcade.overlap(asteroids_blue, sprite, loseLife, null, this);
+    game.physics.arcade.overlap(asteroids_g, sprite, loseLife, null, this);
+    game.physics.arcade.overlap(asteroids_p, sprite, loseLife, null, this);
+    game.physics.arcade.overlap(asteroids_m, sprite, loseLife, null, this);
 
     if (cursors.up.isDown)
     {
