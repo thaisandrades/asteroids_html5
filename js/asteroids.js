@@ -65,28 +65,28 @@ function create() {
     asteroids_p = game.add.group();
     asteroids_p.enableBody = true;
 
-    for (var i = 0; i < 1; i++)
+    for (var i = 0; i < 10; i++)
     {
         var s = asteroids_g.create(game.world.randomX, game.world.randomY, 'asteroid_g');
         //s.body.collideWorldBounds = true;
         s.body.bounce.set(1);
-        s.body.velocity.setTo(10 + Math.random() * 40, 10 + Math.random() * 40);
+        s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
     }
 
-    for (var i = 0; i < 1; i++)
+    for (var i = 0; i < 10; i++)
     {
         var s = asteroids_m.create(game.world.randomX, game.world.randomY, 'asteroid_m');
         //s.body.collideWorldBounds = true;
         s.body.bounce.set(1);
-        s.body.velocity.setTo(10 + Math.random() * 40, 10 + Math.random() * 40);
+        s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
     }
 
-    for (var i = 0; i < 1; i++)
+    for (var i = 0; i < 10; i++)
     {
         var s = asteroids_p.create(game.world.randomX, game.world.randomY, 'asteroid_p');
         //s.body.collideWorldBounds = true;
         s.body.bounce.set(1);
-        s.body.velocity.setTo(10 + Math.random() * 40, 10 + Math.random() * 40);
+        s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
     }
 
     //  and its physics settings
@@ -157,7 +157,7 @@ function update() {
 
 function fireBullet () {
 
-    if (game.time.now > bulletTime)
+    if ((game.time.now > bulletTime) && sprite.alive)
     {
         bullet = bullets.getFirstExists(false);
 
@@ -232,13 +232,17 @@ function firePurpleAsteroid (asteroid, bullets) {
 }
 
 function loseLife(sprite, asteroid) {
-   lives-=1;
-   livesText.text = 'Lives: ' + score;
-    sprite.kill();
-    timer = this.time.create(false);
-    timer.add(500, reviveSprite, this.context); 
-    //this.timer.loop(100, reviveSprite, this.context);
-    timer.start();
+    if(sprite.alive){
+       sprite.kill();
+       timer = this.time.create(false);
+       timer.add(5000, reviveSprite, this.context); 
+       ////this.timer.loop(100, reviveSprite, this.context);
+       timer.start();
+
+       lives-=1;
+       livesText.text = 'Lives: ' + lives;
+       //alert('kill');
+   } 
 }
 
 function reviveSprite(){
