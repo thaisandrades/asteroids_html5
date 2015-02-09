@@ -2,26 +2,26 @@ var AsteroidsGame = AsteroidsGame || {};
 
 AsteroidsGame.GameState = function (game) {
     //this.result = 'Toque para iniciar o jogo!';
-	var sprite;
-	var asteroids_g;
-	var asteroids_p;
-	var asteroids_m;
-	var cursors;
+    var sprite;
+    var asteroids_g;
+    var asteroids_p;
+    var asteroids_m;
+    var cursors;
 
-	var bullet;
-	var bullets;
-	var bulletTime = 0;
+    var bullet;
+    var bullets;
+    var bulletTime = 0;
 
-	var score = 0;
-	var lives = 3;
-	var scoreText;
-	var livesText;
+    var score = 0;
+    var lives = 3;
+    var scoreText;
+    var livesText;
 };
 
 AsteroidsGame.GameState.prototype = {
 
 preload: function(score) {
-	this.game.load.image('space', 'assets/starfield.png');
+    this.game.load.image('space', 'assets/starfield.png');
     this.game.load.image('bullet', 'assets/bullets3.png');
     this.game.load.image('ship', 'assets/ship3.png');
     //game.load.image('asteroid', 'assets/asteroid1.png');
@@ -52,12 +52,12 @@ create: function() {
     bullets.physicsBodyType = Phaser.Physics.ARCADE;
 
     //  All 40 of them
-    bullets.createMultiple(40, 'bullet');
+    bullets.createMultiple(10, 'bullet');
     bullets.setAll('anchor.x', 0.5);
     bullets.setAll('anchor.y', 0.5);
 
     //  Our player ship
-    sprite = this.game.add.sprite(300, 300, 'ship');
+    sprite = this.game.add.sprite(this.game.width/2, this.game.height - 10, 'ship');
     sprite.anchor.set(0.5);
 
     asteroids_g = this.game.add.group();
@@ -69,7 +69,7 @@ create: function() {
     asteroids_p = this.game.add.group();
     asteroids_p.enableBody = true;
 
-    for (var i = 0; i < 10; i++)
+    for (var i = 0; i < 1; i++)
     {
         var s = asteroids_g.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_g');
         //s.body.collideWorldBounds = true;
@@ -77,7 +77,7 @@ create: function() {
         s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
     }
 
-    for (var i = 0; i < 10; i++)
+    for (var i = 0; i < 3; i++)
     {
         var s = asteroids_m.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_m');
         //s.body.collideWorldBounds = true;
@@ -85,7 +85,7 @@ create: function() {
         s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
     }
 
-    for (var i = 0; i < 10; i++)
+    for (var i = 0; i < 3; i++)
     {
         var s = asteroids_p.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_p');
         //s.body.collideWorldBounds = true;
@@ -95,8 +95,8 @@ create: function() {
 
     //  and its physics settings
     this.game.physics.enable(sprite, Phaser.Physics.ARCADE);
-    //sprite.body.collideWorldBounds = true;
-    sprite.body.bounce.set(1);
+    sprite.body.collideWorldBounds = true;
+    sprite.body.bounce.set(0);
 
     sprite.body.drag.set(100);
     sprite.body.maxVelocity.set(150);
@@ -111,11 +111,21 @@ create: function() {
 
     //  The lives
     this.livesText = this.game.add.text(16, 45, 'Lives: 3', { fontSize: '32px', fill: '#FFF' });
+   var gameWidth = this.game.width;
+   var RIGHT = 0, LEFT = 1;
+    this.game.input.onTap.add(function(e){
+        if (Math.floor(e.x/(gameWidth/2)) === LEFT) {
+            sprite.body.acceleration.x= 300;
+        }
+    
+        if (Math.floor(e.x/(gameWidth/2)) === RIGHT) {
+            sprite.body.acceleration.x= -300;
+        }
+    });
 },
-	update: function() {
-//game.physics.arcade.collide(sprite, asteroids_green);
-    //game.physics.arcade.collide(sprite, asteroids_purple);
-    //game.physics.arcade.collide(sprite, asteroids_blue);
+    update: function() {
+
+   
 
     this.game.physics.arcade.overlap(asteroids_g, bullets, this.fireGreenAsteroid, null, this);
     this.game.physics.arcade.overlap(asteroids_p, bullets, this.firePurpleAsteroid, null, this);
@@ -125,141 +135,102 @@ create: function() {
     this.game.physics.arcade.overlap(asteroids_p, sprite, this.loseLife, null, this);
     this.game.physics.arcade.overlap(asteroids_m, sprite, this.loseLife, null, this);
 
-    if (cursors.up.isDown)
-    {
-        //this.game.physics.arcade.accelerationFromRotation(sprite.rotation, 200, sprite.body.acceleration);
-        sprite.body.acceleration.y = -300;
-    }
-    else
-    {
-        sprite.body.acceleration.set(0);
-    }
-
-    if (cursors.left.isDown)
-    {
-        //sprite.body.angularVelocity = -300;
-        sprite.body.acceleration.x= -300;
-    }
-    else if (cursors.right.isDown)
-    {
-        //sprite.body.angularVelocity = 300;
-        sprite.body.acceleration.x= 300;
-    }
-    else if (cursors.down.isDown)
-    {
-        //sprite.body.angularVelocity = 0;
-        sprite.body.acceleration.y = 300;        
-    }
-
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
-    {
-
-        this.fireBullet();
-    }
-
+    this.fireBullet();
+ 
     this.screenWrap(sprite);
 
     bullets.forEachExists(this.screenWrap, this);
-	},
-	loseLife:function(sprite, asteroid){
-		if(sprite.alive){
-	       sprite.kill();
-	       if(this.lives <= 0){
-       			this.game.time.events.add(800, this.gameOver, this);
-       		}
-       		else{
-		       timer = this.time.create(false);
-		       timer.add(5000, this.reviveSprite, this.context); 
-		       ////this.timer.loop(100, reviveSprite, this.context);
-		       timer.start();
-			   this.lives-=1;
-		       this.livesText.text = 'Lives: ' + this.lives;
-      		 }
-       		
-   		} 
-	},
-	fireBullet:function(){
-	//if ((this.game.time.now > this.bulletTime) && this.sprite.alive)
-	if (sprite.alive)
-	    {
-	    	//alert('bullet?');
-	        bullet = bullets.getFirstExists(false);
+    },
+    loseLife:function(sprite, asteroid){
+        if(sprite.alive){
+           sprite.kill();
+           if(this.lives <= 0){
+                this.game.time.events.add(800, this.gameOver, this);
+            }
+            else{
+               timer = this.time.create(false);
+               timer.add(5000, this.reviveSprite, this.context); 
+               ////this.timer.loop(100, reviveSprite, this.context);
+               timer.start();
+               this.lives-=1;
+               this.livesText.text = 'Lives: ' + this.lives;
+             }
+            
+        } 
+    },
+    fireBullet:function(){
+    //if ((this.game.time.now > this.bulletTime) && this.sprite.alive)
+    if (sprite.alive)
+        {
+            //alert('bullet?');
+            bullet = bullets.getFirstExists(false);
 
-	        if (bullet)
-	        {	            
+            if (bullet)
+            {               
                 bullet.reset(sprite.body.x + 16, sprite.body.y + 16);
-	            bullet.lifespan = 2000;
-	            bullet.rotation = sprite.rotation;
-	            //this.game.physics.arcade.velocityFromRotation(sprite.rotation, 400, bullet.body.velocity);
-                this.game.physics.arcade.velocityFromRotation(-(3.1415/2), 400, bullet.body.velocity);
+                bullet.lifespan = 200;
+                bullet.rotation = sprite.rotation;
+                //this.game.physics.arcade.velocityFromRotation(sprite.rotation, 400, bullet.body.velocity);
+                this.game.physics.arcade.velocityFromRotation(-(3.1415/2), 700, bullet.body.velocity);
 
-	            
-                bulletTime = this.game.time.now + 50;
-	        }
-	    }
-	},
-	screenWrap:function(sprite){
+                
+                bulletTime = this.game.time.now + 10;
+            }
+        }
+    },
+    screenWrap:function(sprite){
 
-	    if (sprite.x < 0)
-	    {
-	        sprite.x = this.game.width;
-	    }
-	    else if (sprite.x > this.game.width)
-	    {
-	        sprite.x = 0;
-	    }
+        if (sprite.x < 0)
+        {
+            sprite.x = this.game.width;
+        }
+        else if (sprite.x > this.game.width)
+        {
+            sprite.x = 0;
+        }
 
-	    if (sprite.y < 0)
-	    {
-	        sprite.y = this.game.height;
-	    }
-	    else if (sprite.y > this.game.height)
-	    {
-	        sprite.y = 0;
-	    }
-	},
-	fireGreenAsteroid:function(asteroid, bullets){
+        if (sprite.y < 0)
+        {
+            sprite.y = this.game.height;
+        }
+        else if (sprite.y > this.game.height)
+        {
+            sprite.y = 0;
+        }
+    },
+    fireGreenAsteroid:function(asteroid, bullets){
 
-	    // Removes the asteroid from the screen
-	    //bullets.kill();
-	    asteroid.kill();
+        // Removes the asteroid from the screen
+        //bullets.kill();
+        asteroid.kill();
 
-	    //  Add and update the score
-	    this.score += 5;
-	    this.scoreText.text = 'Score: ' + this.score;
-	},
-	fireBlueAsteroid:function(asteroid, bullets){
-		// Removes the asteroid from the screen
-	    //bullets.kill();
-	    asteroid.kill();
+        //  Add and update the score
+        this.score += 5;
+        this.scoreText.text = 'Score: ' + this.score;
+    },
+    fireBlueAsteroid:function(asteroid, bullets){
+        // Removes the asteroid from the screen
+        //bullets.kill();
+        asteroid.kill();
 
-	    //  Add and update the score
-	    this.score += 10;
-	    this.scoreText.text = 'Score: ' + this.score;
-	},
-	firePurpleAsteroid:function(asteroid, bullets){
-	 	// Removes the asteroid from the screen
-	    //bullets.kill();
-	    asteroid.kill();
+        //  Add and update the score
+        this.score += 10;
+        this.scoreText.text = 'Score: ' + this.score;
+    },
+    firePurpleAsteroid:function(asteroid, bullets){
+        // Removes the asteroid from the screen
+        //bullets.kill();
+        asteroid.kill();
 
-	    //  Add and update the score
-	    this.score += 15;
-	    this.scoreText.text = 'Score: ' + this.score;
-	},
-	reviveSprite:function(){
-		sprite.revive();
-	},
-	gameOver: function() {    
+        //  Add and update the score
+        this.score += 15;
+        this.scoreText.text = 'Score: ' + this.score;
+    },
+    reviveSprite:function(){
+        sprite.revive();
+    },
+    gameOver: function() {    
     //pass it the score as a parameter 
     this.game.state.start('GameOverState', true, false, this.score);
-  },
+  }
 }
-
-/*
-function blinkSprite() {
-    if (sprite.exists) {
-        sprite.kill();
-    } else {
-        sprite.revive();
-    }
-}*/
