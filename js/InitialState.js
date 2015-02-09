@@ -20,8 +20,8 @@ AsteroidsGame.InitialState.prototype = {
     //show the space tile, repeated
     this.background = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'space');
     
-    //give it speed in x
-    this.background.autoScroll(-20, 0);
+    //give it speed in Y
+    this.background.autoScroll(0, 20);
 
     //start game text
     var text = "Toque para iniciar";

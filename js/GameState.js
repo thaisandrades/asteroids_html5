@@ -22,8 +22,8 @@ AsteroidsGame.GameState.prototype = {
 
 preload: function(score) {
 	this.game.load.image('space', 'assets/starfield.png');
-    this.game.load.image('bullet', 'assets/bullets2.png');
-    this.game.load.image('ship', 'assets/ship.png');
+    this.game.load.image('bullet', 'assets/bullets3.png');
+    this.game.load.image('ship', 'assets/ship3.png');
     //game.load.image('asteroid', 'assets/asteroid1.png');
     this.game.load.image('asteroid_g', 'assets/ast_green_80.png');
     this.game.load.image('asteroid_m', 'assets/ast_blue_50x50.png');
@@ -42,7 +42,9 @@ create: function() {
     this.game.physics.arcade.skipQuadTree = false;
 
     //  A spacey background
-    this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'space');
+    this.background = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'space');
+    //give it speed in Y
+    this.background.autoScroll(0, 20);
 
     //  Our ships bullets
     bullets = this.game.add.group();
@@ -57,7 +59,7 @@ create: function() {
     //  Our player ship
     sprite = this.game.add.sprite(300, 300, 'ship');
     sprite.anchor.set(0.5);
-    
+
     asteroids_g = this.game.add.group();
     asteroids_g.enableBody = true;
 
@@ -125,7 +127,8 @@ create: function() {
 
     if (cursors.up.isDown)
     {
-        this.game.physics.arcade.accelerationFromRotation(sprite.rotation, 200, sprite.body.acceleration);
+        //this.game.physics.arcade.accelerationFromRotation(sprite.rotation, 200, sprite.body.acceleration);
+        sprite.body.acceleration.y = -300;
     }
     else
     {
@@ -134,15 +137,18 @@ create: function() {
 
     if (cursors.left.isDown)
     {
-        sprite.body.angularVelocity = -300;
+        //sprite.body.angularVelocity = -300;
+        sprite.body.acceleration.x= -300;
     }
     else if (cursors.right.isDown)
     {
-        sprite.body.angularVelocity = 300;
+        //sprite.body.angularVelocity = 300;
+        sprite.body.acceleration.x= 300;
     }
-    else
+    else if (cursors.down.isDown)
     {
-        sprite.body.angularVelocity = 0;
+        //sprite.body.angularVelocity = 0;
+        sprite.body.acceleration.y = 300;        
     }
 
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
@@ -180,12 +186,15 @@ create: function() {
 	        bullet = bullets.getFirstExists(false);
 
 	        if (bullet)
-	        {
-	            bullet.reset(sprite.body.x + 16, sprite.body.y + 16);
+	        {	            
+                bullet.reset(sprite.body.x + 16, sprite.body.y + 16);
 	            bullet.lifespan = 2000;
 	            bullet.rotation = sprite.rotation;
-	            this.game.physics.arcade.velocityFromRotation(sprite.rotation, 400, bullet.body.velocity);
-	            bulletTime = this.game.time.now + 50;
+	            //this.game.physics.arcade.velocityFromRotation(sprite.rotation, 400, bullet.body.velocity);
+                this.game.physics.arcade.velocityFromRotation(-(3.1415/2), 400, bullet.body.velocity);
+
+	            
+                bulletTime = this.game.time.now + 50;
 	        }
 	    }
 	},
