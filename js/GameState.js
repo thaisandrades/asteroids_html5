@@ -128,8 +128,6 @@ create: function() {
 },
     update: function() {
 
-   
-
     this.game.physics.arcade.overlap(asteroids_g, bullets, this.fireGreenAsteroid, null, this);
     this.game.physics.arcade.overlap(asteroids_p, bullets, this.firePurpleAsteroid, null, this);
     this.game.physics.arcade.overlap(asteroids_m, bullets, this.fireBlueAsteroid, null, this);
