@@ -8,6 +8,7 @@ AsteroidsGame.InitialState = function (game) {
 AsteroidsGame.InitialState.prototype = {
     preload: function(score) {
 
+    this.load.image('playerParticle', 'assets/player-particle.png');
     this.load.audio('explosion', 'assets/explosion.ogg');
     this.game.load.image('space', 'assets/starfield.png');
 

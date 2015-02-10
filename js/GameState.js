@@ -46,6 +46,9 @@ create: function() {
     //give it speed in Y
     this.background.autoScroll(0, 20);
 
+    //sounds
+    this.explosionSound = this.game.add.audio('explosion');
+
     //  Our ships bullets
     bullets = this.game.add.group();
     bullets.enableBody = true;
@@ -143,9 +146,25 @@ create: function() {
     },
     loseLife:function(sprite, asteroid){
         if(sprite.alive){
+
+             this.explosionSound.play();
+
+                //make the player explode
+                var emitter = this.game.add.emitter(sprite.x, sprite.y, 100);
+                emitter.makeParticles('playerParticle');
+                emitter.minParticleSpeed.setTo(-200, -200);
+                emitter.maxParticleSpeed.setTo(200, 200);
+                emitter.gravity = 0;
+                emitter.start(true, 1000, null, 100);
+
            sprite.kill();
+
            if(this.lives <= 0){
-                this.game.time.events.add(800, this.gameOver, this);
+            //play explosion sound
+               
+                this.sprite.destroy();
+
+                this.game.time.events.add(500, this.gameOver, this);
             }
             else{
                timer = this.time.create(false);
@@ -204,6 +223,16 @@ create: function() {
         //bullets.kill();
         asteroid.kill();
 
+        this.explosionSound.play();
+
+                //make the player explode
+                var emitter = this.game.add.emitter(asteroid.x, asteroid.y, 100);
+                emitter.makeParticles('playerParticle');
+                emitter.minParticleSpeed.setTo(-200, -200);
+                emitter.maxParticleSpeed.setTo(200, 200);
+                emitter.gravity = 0;
+                emitter.start(true, 1000, null, 100);
+
         //  Add and update the score
         this.score += 5;
         this.scoreText.text = 'Score: ' + this.score;
@@ -213,6 +242,16 @@ create: function() {
         //bullets.kill();
         asteroid.kill();
 
+        this.explosionSound.play();
+
+                //make the player explode
+                var emitter = this.game.add.emitter(asteroid.x, asteroid.y, 100);
+                emitter.makeParticles('playerParticle');
+                emitter.minParticleSpeed.setTo(-200, -200);
+                emitter.maxParticleSpeed.setTo(200, 200);
+                emitter.gravity = 0;
+                emitter.start(true, 1000, null, 100);
+
         //  Add and update the score
         this.score += 10;
         this.scoreText.text = 'Score: ' + this.score;
@@ -221,6 +260,16 @@ create: function() {
         // Removes the asteroid from the screen
         //bullets.kill();
         asteroid.kill();
+
+        this.explosionSound.play();
+
+                //make the player explode
+                var emitter = this.game.add.emitter(asteroid.x, asteroid.y, 100);
+                emitter.makeParticles('playerParticle');
+                emitter.minParticleSpeed.setTo(-200, -200);
+                emitter.maxParticleSpeed.setTo(200, 200);
+                emitter.gravity = 0;
+                emitter.start(true, 1000, null, 100);
 
         //  Add and update the score
         this.score += 15;
