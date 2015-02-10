@@ -80,30 +80,6 @@ create: function() {
     Loop.add(Phaser.Timer.SECOND * 15, this.createAsteroids, this);
     Loop.start();
     
-    /*for (var i = 0; i < 1; i++)
-    {
-        var s = asteroids_g.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_g');
-        //s.body.collideWorldBounds = true;
-        s.body.bounce.set(1);
-        s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
-    }
-
-    for (var i = 0; i < 3; i++)
-    {
-        var s = asteroids_m.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_m');
-        //s.body.collideWorldBounds = true;
-        s.body.bounce.set(1);
-        s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
-    }
-
-    for (var i = 0; i < 3; i++)
-    {
-        var s = asteroids_p.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_p');
-        //s.body.collideWorldBounds = true;
-        s.body.bounce.set(1);
-        s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
-    }*/
-    //this.createAsteroids()
     //this.game.time.events.add(Phaser.Timer.SECOND *20, this.createAsteroids(), this);
     //this.game.time.events.add(Phaser.Timer.SECOND *60, this.createAsteroids(), this);
     //this.game.time.events.loop(Phaser.Timer.SECOND *20, this.createAsteroids(3,3,3), this);
