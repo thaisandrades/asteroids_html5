@@ -236,6 +236,7 @@ create: function() {
 
         //  Add and update the score
         this.score += 10;
+        window.localStorage.setItem('score', this.score);
         this.scoreText.text = 'Score: ' + this.score;
     },
     firePurpleAsteroid:function(asteroid, bullets){
@@ -262,6 +263,11 @@ create: function() {
     },
     gameOver: function() {    
     //pass it the score as a parameter 
+    var high = window.localStorage.getItem('high_score');
+    if(this.score > high){
+        window.localStorage.setItem('high_score', this.score);
+    }
+    
     this.game.state.start('GameOverState', true, false, this.score);
   }, createAsteroids:function(){     
             

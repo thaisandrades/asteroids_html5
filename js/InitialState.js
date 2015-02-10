@@ -11,11 +11,14 @@ AsteroidsGame.InitialState.prototype = {
     this.load.image('playerParticle', 'assets/player-particle.png');
     this.load.audio('explosion', 'assets/explosion.ogg');
     this.game.load.image('space', 'assets/starfield.png');
+    this.game.load.image('playerParticle', 'assets/player-particle.png');
 
     var score = score || 0;
-    this.highestScore = this.highestScore || 0;
+    //this.highestScore = this.highestScore || 0;
 
-    this.highestScore = Math.max(score, this.highestScore);
+    //this.highestScore = Math.max(score, this.highestScore);
+    this.highestScore = 0;
+    this.highestScore = window.localStorage.getItem('high_score');
     },
     create: function() {
     //show the space tile, repeated

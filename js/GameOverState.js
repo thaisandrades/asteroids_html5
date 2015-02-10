@@ -7,9 +7,12 @@ AsteroidsGame.GameOverState = function (game) {
 AsteroidsGame.GameOverState.prototype = {
     preload: function(score) {
     var score = score || 0;
-    this.highestScore = this.highestScore || 0;
+    //this.highestScore = this.highestScore || 0;
 
-    this.highestScore = Math.max(score, this.highestScore);
+    //this.highestScore = Math.max(score, this.highestScore);
+
+    this.highestScore = window.localStorage.getItem('high_score');
+
     },
     create: function() {
     //show the space tile, repeated
