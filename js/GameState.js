@@ -16,6 +16,7 @@ AsteroidsGame.GameState = function (game) {
     var lives = 3;
     var scoreText;
     var livesText;
+    var timer;
 };
 
 AsteroidsGame.GameState.prototype = {
@@ -28,6 +29,7 @@ preload: function(score) {
     this.game.load.image('asteroid_g', 'assets/ast_green_80.png');
     this.game.load.image('asteroid_m', 'assets/ast_blue_50x50.png');
     this.game.load.image('asteroid_p', 'assets/ast_purple_35x35.png');
+    this.game.load.image('playerParticle', 'assets/player-particle.png');
 },
 create: function() {
 
@@ -72,7 +74,13 @@ create: function() {
     asteroids_p = this.game.add.group();
     asteroids_p.enableBody = true;
 
-    for (var i = 0; i < 1; i++)
+    this.createAsteroids(1, 1, 1);
+    
+    Loop = this.game.time.create(true);
+    Loop.add(Phaser.Timer.SECOND * 15, this.createAsteroids, this);
+    Loop.start();
+    
+    /*for (var i = 0; i < 1; i++)
     {
         var s = asteroids_g.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_g');
         //s.body.collideWorldBounds = true;
@@ -94,8 +102,13 @@ create: function() {
         //s.body.collideWorldBounds = true;
         s.body.bounce.set(1);
         s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
-    }
-
+    }*/
+    //this.createAsteroids()
+    //this.game.time.events.add(Phaser.Timer.SECOND *20, this.createAsteroids(), this);
+    //this.game.time.events.add(Phaser.Timer.SECOND *60, this.createAsteroids(), this);
+    //this.game.time.events.loop(Phaser.Timer.SECOND *20, this.createAsteroids(3,3,3), this);
+    //timer = this.game.time.create(false);
+      
     //  and its physics settings
     this.game.physics.enable(sprite, Phaser.Physics.ARCADE);
     sprite.body.collideWorldBounds = true;
@@ -144,42 +157,37 @@ create: function() {
     },
     loseLife:function(sprite, asteroid){
         if(sprite.alive){
+            this.lives-=1;
+           this.explosionSound.play();
 
-             this.explosionSound.play();
-
-                //make the player explode
-                var emitter = this.game.add.emitter(sprite.x, sprite.y, 100);
-                emitter.makeParticles('playerParticle');
-                emitter.minParticleSpeed.setTo(-200, -200);
-                emitter.maxParticleSpeed.setTo(200, 200);
-                emitter.gravity = 0;
-                emitter.start(true, 1000, null, 100);
+           //make the sprite explode
+           var emitter = this.game.add.emitter(sprite.x, sprite.y, 100);
+           emitter.makeParticles('playerParticle');
+           emitter.minParticleSpeed.setTo(-200, -200);
+           emitter.maxParticleSpeed.setTo(200, 200);
+           emitter.gravity = 0;
+           emitter.start(true, 1000, null, 100);
 
            sprite.kill();
 
-           if(this.lives <= 0){
-            //play explosion sound
-               
-                this.sprite.destroy();
-
-                this.game.time.events.add(500, this.gameOver, this);
+           if(this.lives == 0){                          
+                sprite.destroy();
+                this.game.time.events.add(300, this.gameOver, this);
             }
             else{
                timer = this.time.create(false);
                timer.add(5000, this.reviveSprite, this.context); 
                ////this.timer.loop(100, reviveSprite, this.context);
                timer.start();
-               this.lives-=1;
+               
                this.livesText.text = 'Lives: ' + this.lives;
-             }
-            
+             }            
         } 
     },
     fireBullet:function(){
     //if ((this.game.time.now > this.bulletTime) && this.sprite.alive)
     if (sprite.alive)
-        {
-            //alert('bullet?');
+        {            
             bullet = bullets.getFirstExists(false);
 
             if (bullet)
@@ -223,13 +231,13 @@ create: function() {
 
         this.explosionSound.play();
 
-                //make the player explode
-                var emitter = this.game.add.emitter(asteroid.x, asteroid.y, 100);
-                emitter.makeParticles('playerParticle');
-                emitter.minParticleSpeed.setTo(-200, -200);
-                emitter.maxParticleSpeed.setTo(200, 200);
-                emitter.gravity = 0;
-                emitter.start(true, 1000, null, 100);
+        //make the player explode
+        var emitter = this.game.add.emitter(asteroid.x, asteroid.y, 100);
+        emitter.makeParticles('playerParticle');
+        emitter.minParticleSpeed.setTo(-200, -200);
+        emitter.maxParticleSpeed.setTo(200, 200);
+        emitter.gravity = 0;
+        emitter.start(true, 1000, null, 100);
 
         //  Add and update the score
         this.score += 5;
@@ -242,13 +250,13 @@ create: function() {
 
         this.explosionSound.play();
 
-                //make the player explode
-                var emitter = this.game.add.emitter(asteroid.x, asteroid.y, 100);
-                emitter.makeParticles('playerParticle');
-                emitter.minParticleSpeed.setTo(-200, -200);
-                emitter.maxParticleSpeed.setTo(200, 200);
-                emitter.gravity = 0;
-                emitter.start(true, 1000, null, 100);
+        //make the player explode
+        var emitter = this.game.add.emitter(asteroid.x, asteroid.y, 100);
+        emitter.makeParticles('playerParticle');
+        emitter.minParticleSpeed.setTo(-200, -200);
+        emitter.maxParticleSpeed.setTo(200, 200);
+        emitter.gravity = 0;
+        emitter.start(true, 1000, null, 100);
 
         //  Add and update the score
         this.score += 10;
@@ -261,13 +269,13 @@ create: function() {
 
         this.explosionSound.play();
 
-                //make the player explode
-                var emitter = this.game.add.emitter(asteroid.x, asteroid.y, 100);
-                emitter.makeParticles('playerParticle');
-                emitter.minParticleSpeed.setTo(-200, -200);
-                emitter.maxParticleSpeed.setTo(200, 200);
-                emitter.gravity = 0;
-                emitter.start(true, 1000, null, 100);
+        //make the player explode
+        var emitter = this.game.add.emitter(asteroid.x, asteroid.y, 100);
+        emitter.makeParticles('playerParticle');
+        emitter.minParticleSpeed.setTo(-200, -200);
+        emitter.maxParticleSpeed.setTo(200, 200);
+        emitter.gravity = 0;
+        emitter.start(true, 1000, null, 100);
 
         //  Add and update the score
         this.score += 15;
@@ -279,5 +287,32 @@ create: function() {
     gameOver: function() {    
     //pass it the score as a parameter 
     this.game.state.start('GameOverState', true, false, this.score);
+  }, createAsteroids:function(){     
+            
+        console.log('createAsteroids '); 
+        
+        for (var i = 0; i < 1; i++)
+        {
+            var s = asteroids_g.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_g');
+            //s.body.collideWorldBounds = true;
+            s.body.bounce.set(1);
+            s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
+        }
+
+        for (var i = 0; i < 1; i++)
+        {
+            var s = asteroids_m.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_m');
+            //s.body.collideWorldBounds = true;
+            s.body.bounce.set(1);
+            s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
+        }
+
+        for (var i = 0; i < 1; i++)
+        {
+            var s = asteroids_p.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_p');
+            //s.body.collideWorldBounds = true;
+            s.body.bounce.set(1);
+            s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
+        }
   }
 }
