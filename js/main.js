@@ -4,5 +4,6 @@ AsteroidsGame.game = new Phaser.Game(window.innerWidth, window.innerHeight, Phas
 AsteroidsGame.game.state.add('InitialState', AsteroidsGame.InitialState);
 AsteroidsGame.game.state.add('GameState', AsteroidsGame.GameState);
 AsteroidsGame.game.state.add('GameOverState', AsteroidsGame.GameOverState);
+AsteroidsGame.game.state.add('GameCongratsState', AsteroidsGame.GameCongratsState);
 
 AsteroidsGame.game.state.start('InitialState');

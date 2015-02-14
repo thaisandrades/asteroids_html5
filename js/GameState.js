@@ -17,6 +17,11 @@ AsteroidsGame.GameState = function (game) {
     var scoreText;
     var livesText;
     var timer;
+    var timerText;
+
+    var astVelocity;
+    var astQuantity;
+    var counter = 0;
 };
 
 AsteroidsGame.GameState.prototype = {
@@ -74,17 +79,24 @@ create: function() {
     asteroids_p = this.game.add.group();
     asteroids_p.enableBody = true;
 
-    this.createAsteroids(1, 1, 1);
-    
+    astQuantity = 1;
+    astVelocity = 10;
+
+    this.createAsteroids();
+    counter = 30;
     Loop = this.game.time.create(true);
-    Loop.add(Phaser.Timer.SECOND * 15, this.createAsteroids, this);
+    Loop.add(Phaser.Timer.SECOND * 10, this.createAsteroids, this);
     Loop.start();
-    
-    //this.game.time.events.add(Phaser.Timer.SECOND *20, this.createAsteroids(), this);
-    //this.game.time.events.add(Phaser.Timer.SECOND *60, this.createAsteroids(), this);
-    //this.game.time.events.loop(Phaser.Timer.SECOND *20, this.createAsteroids(3,3,3), this);
-    //timer = this.game.time.create(false);
-      
+
+    Loop = this.game.time.create(true);
+    Loop.add(Phaser.Timer.SECOND * 20, this.createAsteroids, this);
+    Loop.start();
+
+    /*Loop = this.game.time.create(true);
+    Loop.add(Phaser.Timer.SECOND * 30, this.gameOver, this);
+    Loop.start();
+*/
+    this.game.time.events.loop(Phaser.Timer.SECOND,this.updateCounter,this);  
     //  and its physics settings
     this.game.physics.enable(sprite, Phaser.Physics.ARCADE);
     sprite.body.collideWorldBounds = true;
@@ -98,22 +110,24 @@ create: function() {
     this.game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
     this.score = 0;
     this.lives = 3;
+    this.counter = 30
     //  The score
     this.scoreText = this.game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
 
     //  The lives
     this.livesText = this.game.add.text(16, 45, 'Lives: 3', { fontSize: '32px', fill: '#FFF' });
-   var gameWidth = this.game.width;
-   var RIGHT = 0, LEFT = 1;
-    this.game.input.onTap.add(function(e){
-        if (Math.floor(e.x/(gameWidth/2)) === LEFT) {
-            sprite.body.acceleration.x= 300;
-        }
     
-        if (Math.floor(e.x/(gameWidth/2)) === RIGHT) {
-            sprite.body.acceleration.x= -300;
-        }
-    });
+     this.timerText = this.game.add.text(16, 74, 'Timer: '+counter, { fontSize: '32px', fill: '#FFF' });
+    
+    // setting gyroscope update frequency
+    gyro.frequency = 5;
+    // start gyroscope detection
+    gyro.startTracking(function(o) {
+     // updating player velocity
+        sprite.body.velocity.x += o.gamma/20;
+        sprite.body.velocity.y += o.beta/20;
+    });      
+
 },
     update: function() {
 
@@ -125,8 +139,11 @@ create: function() {
     this.game.physics.arcade.overlap(asteroids_p, sprite, this.loseLife, null, this);
     this.game.physics.arcade.overlap(asteroids_m, sprite, this.loseLife, null, this);
 
-    this.fireBullet();
- 
+    if (this.input.keyboard.isDown(Phaser.Keyboard.Z) ||
+        this.input.activePointer.isDown) {
+      this.fireBullet();
+    }
+
     this.screenWrap(sprite);
 
     bullets.forEachExists(this.screenWrap, this);
@@ -168,14 +185,20 @@ create: function() {
 
             if (bullet)
             {               
-                bullet.reset(sprite.body.x + 16, sprite.body.y + 16);
+               /* bullet.reset(sprite.body.x + 16, sprite.body.y + 16);
                 bullet.lifespan = 200;
                 bullet.rotation = sprite.rotation;
-                //this.game.physics.arcade.velocityFromRotation(sprite.rotation, 400, bullet.body.velocity);
-                this.game.physics.arcade.velocityFromRotation(-(3.1415/2), 700, bullet.body.velocity);
-
-                
+                //this.game.physics.arcade.velocityFromRotation(-(3.1415/2), 400, bullet.body.velocity);
+                this.game.physics.arcade.velocityFromRotation(-(3.1415/2), 400, bullet.body.velocity);
                 bulletTime = this.game.time.now + 10;
+                */
+                
+                bullet.reset(sprite.body.x + 16, sprite.body.y + 16);
+                //bullet.lifespan = 1200;
+                bullet.lifespan = this.game.world.width;
+                bullet.rotation = sprite.rotation;
+                this.game.physics.arcade.velocityFromRotation(-(3.1415/2), 400, bullet.body.velocity);
+                bulletTime = this.game.time.now + 50;
             }
         }
     },
@@ -269,32 +292,60 @@ create: function() {
     }
     
     this.game.state.start('GameOverState', true, false, this.score);
+  },gameWin: function() {    
+    //pass it the score as a parameter 
+    var high = window.localStorage.getItem('high_score');
+    if(this.score > high){
+        window.localStorage.setItem('high_score', this.score);
+    }
+    
+    this.game.state.start('GameCongratsState', true, false, this.score);
   }, createAsteroids:function(){     
             
         console.log('createAsteroids '); 
         
-        for (var i = 0; i < 1; i++)
+        for (var i = 0; i < astQuantity; i++)
         {
-            var s = asteroids_g.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_g');
+            var s = asteroids_g.create(this.game.world.randomX, this.game.world.x, 'asteroid_g');
             //s.body.collideWorldBounds = true;
             s.body.bounce.set(1);
-            s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
+            s.body.velocity.setTo(Math.random(), 10 + Math.random() * astVelocity);
         }
 
-        for (var i = 0; i < 1; i++)
+        for (var i = 0; i < astQuantity; i++)
         {
-            var s = asteroids_m.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_m');
+            var s = asteroids_m.create(this.game.world.randomX, this.game.world.y, 'asteroid_m');
             //s.body.collideWorldBounds = true;
             s.body.bounce.set(1);
-            s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
+            s.body.velocity.setTo(Math.random(), 10 + Math.random() * astVelocity);
         }
 
-        for (var i = 0; i < 1; i++)
+        for (var i = 0; i < astQuantity; i++)
         {
-            var s = asteroids_p.create(this.game.world.randomX, this.game.world.randomY, 'asteroid_p');
+            var s = asteroids_p.create(this.game.world.randomX, this.game.world.y, 'asteroid_p');
             //s.body.collideWorldBounds = true;
             s.body.bounce.set(1);
-            s.body.velocity.setTo(Math.random(), 10 + Math.random() * 40);
+            s.body.velocity.setTo(Math.random(), 10 + Math.random() * astVelocity);
         }
-  }
+
+        astQuantity += 1;
+        astVelocity += 5;
+  },
+  updateCounter:function(){
+    
+    this.counter -=1;
+    // console.log('updateCounter '+this.counter); 
+    this.timerText.text ='Timer: ' + this.counter;
+    if(this.counter <=0){
+        if(this.lives <=0){
+            console.log('game over vidas '+this.lives); 
+            this.gameOver();
+        }
+        else
+        {
+             console.log('win vidas '+this.lives); 
+            this.gameWin();
+        }
+    }
+}
 }

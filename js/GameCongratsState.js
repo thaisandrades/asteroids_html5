@@ -1,10 +1,10 @@
 var AsteroidsGame = AsteroidsGame || {};
 
-AsteroidsGame.GameOverState = function (game) {
+AsteroidsGame.GameCongratsState = function (game) {
     //this.result = 'Toque para iniciar o jogo!';
 };
 
-AsteroidsGame.GameOverState.prototype = {
+AsteroidsGame.GameCongratsState.prototype = {
     preload: function(score) {
     var score = score || 0;
     //this.highestScore = this.highestScore || 0;
@@ -22,7 +22,7 @@ AsteroidsGame.GameOverState.prototype = {
     this.background.autoScroll(0, 20);
 
     //start game text
-    var text = "Game Over!\n Toque para iniciar um novo jogo";
+    var text = "Parabéns! Você sobreviveu!\n Toque para iniciar um novo jogo";
     var style = { font: "25px Arial", fill: "#fff", align: "center" };
     var t = this.game.add.text(this.game.width/2, this.game.height/2, text, style);
     t.anchor.set(0.5);
