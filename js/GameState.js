@@ -128,8 +128,8 @@ create: function() {
     // start gyroscope detection
     gyro.startTracking(function(o) {
      // updating player velocity
-        sprite.body.velocity.x += o.gamma/20;
-        sprite.body.velocity.y += o.beta/20;
+        sprite.body.velocity.x += o.gamma/5;
+        sprite.body.velocity.y += o.beta/5;
     });      
 
 },
@@ -298,6 +298,7 @@ create: function() {
     this.game.state.start('GameCongratsState', true, false, this.score);
   }, createAsteroids:function(){     
             
+    if(sprite.alive){
         console.log('createAsteroids '); 
         
         for (var i = 0; i < astQuantity; i++)
@@ -326,6 +327,7 @@ create: function() {
 
         astQuantity += 1;
         astVelocity += 10;
+    }
   },
   updateCounter:function(){
     
