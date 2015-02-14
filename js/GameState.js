@@ -83,7 +83,8 @@ create: function() {
     astVelocity = 10;
 
     this.createAsteroids();
-    counter = 30;
+    counter = 60;
+    /*
     Loop = this.game.time.create(true);
     Loop.add(Phaser.Timer.SECOND * 10, this.createAsteroids, this);
     Loop.start();
@@ -97,6 +98,9 @@ create: function() {
     Loop.start();
 */
     this.game.time.events.loop(Phaser.Timer.SECOND,this.updateCounter,this);  
+    
+    this.game.time.events.loop(Phaser.Timer.SECOND *5,this.createAsteroids,this);  
+    
     //  and its physics settings
     this.game.physics.enable(sprite, Phaser.Physics.ARCADE);
     sprite.body.collideWorldBounds = true;
@@ -110,14 +114,14 @@ create: function() {
     this.game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
     this.score = 0;
     this.lives = 3;
-    this.counter = 30
+    this.counter = 60;
     //  The score
     this.scoreText = this.game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
 
     //  The lives
     this.livesText = this.game.add.text(16, 45, 'Lives: 3', { fontSize: '32px', fill: '#FFF' });
     
-     this.timerText = this.game.add.text(16, 74, 'Timer: '+counter, { fontSize: '32px', fill: '#FFF' });
+     this.timerText = this.game.add.text(16, 74, 'Timer: '+this.counter, { fontSize: '32px', fill: '#FFF' });
     
     // setting gyroscope update frequency
     gyro.frequency = 5;
@@ -184,18 +188,10 @@ create: function() {
             bullet = bullets.getFirstExists(false);
 
             if (bullet)
-            {               
-               /* bullet.reset(sprite.body.x + 16, sprite.body.y + 16);
-                bullet.lifespan = 200;
-                bullet.rotation = sprite.rotation;
-                //this.game.physics.arcade.velocityFromRotation(-(3.1415/2), 400, bullet.body.velocity);
-                this.game.physics.arcade.velocityFromRotation(-(3.1415/2), 400, bullet.body.velocity);
-                bulletTime = this.game.time.now + 10;
-                */
-                
+            {  
                 bullet.reset(sprite.body.x + 16, sprite.body.y + 16);
-                //bullet.lifespan = 1200;
-                bullet.lifespan = this.game.world.width;
+                bullet.lifespan = 1200;
+                //bullet.lifespan = this.game.world.width;
                 bullet.rotation = sprite.rotation;
                 this.game.physics.arcade.velocityFromRotation(-(3.1415/2), 400, bullet.body.velocity);
                 bulletTime = this.game.time.now + 50;
@@ -329,7 +325,7 @@ create: function() {
         }
 
         astQuantity += 1;
-        astVelocity += 5;
+        astVelocity += 10;
   },
   updateCounter:function(){
     
